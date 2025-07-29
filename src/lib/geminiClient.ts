@@ -1,5 +1,4 @@
 import { GoogleGenerativeAI } from '@google/generative-ai';
-import prisma from '@/lib/db';
 export interface PitchAnalysis {
   founderAnalysis: {
     names: string[];
@@ -46,49 +45,57 @@ Traction: 3 pilots in tier-1 hospitals, 85% alert precision, and 20% reduction i
 Monetization: Enterprise SaaS — $10K/month per hospital system.
 `;
 
-const systemInstructions = `
-You are a expert venture capitalist with experience of 10+ years. 
+const systemInstructions=`
+You are VentureMind — an AI-powered VC assistant trained to analyze startup pitch decks with depth and clarity. You think like a seasoned venture capitalist with 15+ years of experience. You assess founders, markets, product value, and strategic fit. 
 
-Do smart analysis, deep research and modern calculations based of relevancy of the project, future scope and potential impact with respect to the following categories:
-Vertical AI, Market Size, Founder Analysis, and VC Analysis.
+Your job is to:
+1. **Analyze** the pitch deck content provided to you — ONLY based on the content shared by the user. Do NOT hallucinate or fabricate information.
+2. **Extract** structured insights:
+   - Founders' background, team credibility
+   - Market sizing (TAM, SAM, SOM)
+   - AI vertical integration and relevance
+   - Investment pros and cons
+   - Rating and funding recommendation
+3. **Reply** in structured JSON format (see example below) with no additional commentary.
+4. **Continue discussion** based on prior messages — if a follow-up question is asked, give more detail and insights.
 
-You will be given a startup pitch. Your job is to extract the following structured JSON format from the pitch only based on what is explicitly mentioned. Do not assume, hallucinate, or invent any information not present in the pitch. If data is missing, use null or empty strings or 0.
+### Example response:
 
-Example Pitch:
-"""${examplePitch}"""
-
-
-Return only a valid JSON object:
 {
-  founderAnalysis: {
-    names: [...],
-    background: "...",
-    credibility: 0-10,
-    assessment: "..."
+  "founderAnalysis": {
+    "names": ["Alice", "Bob"],
+    "background": "Alice is a former Google PM with 10 years in AI. Bob is an ex-YC founder.",
+    "credibility": 9,
+    "assessment": "Excellent founding team with domain experience."
   },
-  marketSize: {
-    tam: "...",
-    sam: "...",
-    som: "...",
-    growth: "...",
-    assessment: "..."
+  "marketSize": {
+    "tam": "$50B",
+    "sam": "$8B",
+    "som": "$500M",
+    "growth": "28% CAGR",
+    "assessment": "Massive and fast-growing market."
   },
-  aiVertical: {
-    connection: "...",
-    strength: 0-10,
-    opportunities: [...],
-    assessment: "..."
+  "aiVertical": {
+    "connection": "Directly applies vertical AI for clinical decision support.",
+    "strength": 8,
+    "opportunities": ["Medical diagnosis", "Hospital automation"],
+    "assessment": "High relevance and defensibility in AI."
   },
-  vcAnalysis: {
-    pros: [...],
-    cons: [...],
-    rating: 0-10,
-    recommendation: "...",
-    fundingStage: "...",
-    suggestedAmount: "..."
+  "vcAnalysis": {
+    "pros": ["Strong team", "Proprietary data", "Large market"],
+    "cons": ["Regulatory hurdles", "Burn rate concerns"],
+    "rating": 8,
+    "recommendation": "INVEST — High potential, watch CAC",
+    "fundingStage": "Seed",
+    "suggestedAmount": "$1-2M"
   }
 }
-`;
+
+### Rules:
+- If a pitch lacks data, mention it in the "assessment" fields.
+- Never invent names, numbers, or facts.
+- Maintain context and build on previous chats.
+`
 
 export async function analyzePitchDeckWithGemini(apiKey: string, pitch: string): Promise<PitchAnalysis> {
   const genAI = new GoogleGenerativeAI(apiKey);
@@ -105,20 +112,14 @@ export async function analyzePitchDeckWithGemini(apiKey: string, pitch: string):
 
 
   const result = await model.generateContent(pitch);
+
   const text = result.response.text();
   try {
     const start = text.indexOf('{');
     const jsonText = text.slice(start);
-    const analysis: PitchAnalysis = JSON.parse(jsonText);
+  
 
-    await prisma.pitch.create({
-      data: {
-        content: pitch,
-        analysis: analysis as any, 
-      },
-    });
-
-    return analysis;
+    return JSON.parse(jsonText) as PitchAnalysis;
    
   } catch (error) {
     console.error('Gemini JSON parsing error:', error);
