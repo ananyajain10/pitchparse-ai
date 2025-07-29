@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Card } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
+import { analyzePitchDeckWithGemini } from '@/lib/geminiClient';
 
 interface Message {
   id: string;
@@ -69,51 +70,10 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({ apiKey }) => {
   }, [messages]);
 
   const analyzePitchDeck = async (content: string): Promise<PitchAnalysis> => {
-    // Simulate API call for now - replace with actual Gemini API integration
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    
-    return {
-      founderAnalysis: {
-        names: ["John Smith", "Sarah Johnson"],
-        background: "Serial entrepreneurs with 15+ years in enterprise software. John: Former VP Engineering at Salesforce, Stanford CS. Sarah: Ex-McKinsey consultant, Harvard MBA.",
-        credibility: 8,
-        assessment: "Strong founding team with complementary skills and relevant experience in the target market."
-      },
-      marketSize: {
-        tam: "$45B",
-        sam: "$12B", 
-        som: "$500M",
-        growth: "23% CAGR",
-        assessment: "Large and rapidly growing market with clear expansion opportunities."
-      },
-      aiVertical: {
-        connection: "Direct integration with vertical AI solutions for enterprise automation",
-        strength: 7,
-        opportunities: ["Workflow optimization", "Predictive analytics", "Process automation"],
-        assessment: "Strong AI vertical potential with clear value proposition for enterprise customers."
-      },
-      vcAnalysis: {
-        pros: [
-          "Experienced founding team",
-          "Large addressable market",
-          "Strong AI differentiation",
-          "Clear monetization strategy",
-          "Existing customer traction"
-        ],
-        cons: [
-          "Competitive landscape",
-          "High customer acquisition cost",
-          "Regulatory uncertainties"
-        ],
-        rating: 7,
-        recommendation: "INVEST - Strong fundamentals with clear growth trajectory",
-        fundingStage: "Series A",
-        suggestedAmount: "$5-8M"
-      }
-    };
+    return await analyzePitchDeckWithGemini(apiKey, content);
   };
 
-  const handleSend = async () => {
+   const handleSend = async () => {
     if (!input.trim() || isLoading) return;
 
     const userMessage: Message = {
@@ -127,9 +87,9 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({ apiKey }) => {
     setInput('');
     setIsLoading(true);
 
-    try {
+  try {
       const analysis = await analyzePitchDeck(input);
-      
+
       const aiMessage: Message = {
         id: (Date.now() + 1).toString(),
         type: 'ai',
@@ -143,7 +103,7 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({ apiKey }) => {
       const errorMessage: Message = {
         id: (Date.now() + 1).toString(),
         type: 'ai',
-        content: 'Sorry, I encountered an error analyzing your pitch deck. Please try again.',
+        content: '❌ Error analyzing the pitch deck. Please check your input or API key and try again.',
         timestamp: new Date()
       };
       setMessages(prev => [...prev, errorMessage]);
@@ -152,6 +112,8 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({ apiKey }) => {
     }
   };
 
+
+    
   const AnalysisCard: React.FC<{ analysis: PitchAnalysis }> = ({ analysis }) => (
     <div className="space-y-6 mt-4">
       {/* Founder Analysis */}
