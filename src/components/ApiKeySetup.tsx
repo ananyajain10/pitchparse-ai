@@ -35,7 +35,6 @@ export const ApiKeySetup: React.FC<ApiKeySetupProps> = ({ onApiKeySet }) => {
 
   const useDummyKey = () => {
     const dummyKey = import.meta.env.VITE_GEMINI_DEMO_KEY;
-    console.log('Using dummy API key:', dummyKey);
     setApiKey(dummyKey);
     localStorage.setItem('gemini_api_key', dummyKey);
     onApiKeySet(dummyKey);
