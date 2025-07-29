@@ -2,41 +2,68 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Definition of the design system. All colors, gradients, fonts, etc should be defined here. 
-All colors MUST be HSL.
-*/
+/* VentureMind Design System - Professional VC Aesthetics */
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    /* Main Background & Foreground */
+    --background: 224 71% 4%;
+    --foreground: 213 31% 91%;
 
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    /* Cards & Surfaces */
+    --card: 224 71% 4%;
+    --card-foreground: 213 31% 91%;
+    --glass-bg: 224 71% 4% / 0.3;
+    --glass-border: 213 31% 91% / 0.1;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    /* Chat Interface */
+    --chat-bg: 225 25% 8%;
+    --user-message: 234 89% 74%;
+    --ai-message: 224 71% 4%;
+    --message-border: 213 31% 91% / 0.1;
 
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
+    /* Branding Colors */
+    --primary: 234 89% 74%;
+    --primary-foreground: 224 71% 4%;
+    --primary-glow: 234 89% 74% / 0.5;
 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 225 25% 15%;
+    --secondary-foreground: 213 31% 91%;
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    --accent: 281 83% 47%;
+    --accent-foreground: 213 31% 91%;
+    --accent-glow: 281 83% 47% / 0.3;
 
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    /* Interactive Elements */
+    --muted: 225 25% 12%;
+    --muted-foreground: 215 20% 65%;
 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    --border: 225 25% 15%;
+    --input: 225 25% 12%;
+    --ring: 234 89% 74%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    /* Status Colors */
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 213 31% 91%;
 
-    --radius: 0.5rem;
+    --success: 142 71% 45%;
+    --warning: 48 96% 53%;
+
+    /* Gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(234 89% 74%), hsl(281 83% 47%));
+    --gradient-bg: linear-gradient(135deg, hsl(224 71% 4%), hsl(225 25% 8%));
+    --gradient-card: linear-gradient(135deg, hsl(224 71% 4% / 0.5), hsl(225 25% 8% / 0.3));
+
+    /* Shadows & Effects */
+    --shadow-glow: 0 0 40px hsl(var(--primary-glow));
+    --shadow-accent: 0 0 30px hsl(var(--accent-glow));
+    --shadow-elevation: 0 25px 50px -12px hsl(224 71% 4% / 0.5);
+
+    /* Animation */
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-bounce: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+
+    --radius: 1rem;
 
     --sidebar-background: 0 0% 98%;
 
