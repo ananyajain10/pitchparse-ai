@@ -6,28 +6,11 @@ import { Card } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
 import { analyzePitchDeckWithGemini } from '@/lib/geminiClient';
 
+
 // File processing utilities
 class FileProcessor {
-  static async extractTextFromPDF(file: File): Promise<string> {
-    // Using PDF.js library
-    const pdfjsLib = await import('pdfjs-dist');
-    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
-    
-    const arrayBuffer = await file.arrayBuffer();
-    const pdf = await pdfjsLib.getDocument(arrayBuffer).promise;
-    let fullText = '';
-
-    for (let i = 1; i <= pdf.numPages; i++) {
-      const page = await pdf.getPage(i);
-      const textContent = await page.getTextContent();
-      const pageText = textContent.items
-        .map((item: any) => item.str)
-        .join(' ');
-      fullText += pageText + '\n';
-    }
-
-    return fullText;
-  }
+   
+  
 
   static async extractTextFromDoc(file: File): Promise<string> {
     const mammoth = await import('mammoth');
@@ -49,7 +32,18 @@ class FileProcessor {
     const fileName = file.name.toLowerCase();
     
     if (fileType === 'application/pdf') {
-      return await this.extractTextFromPDF(file);
+      // Updated to get PDF text from API
+      const formData = new FormData();
+      formData.append('file', file);
+      const BASE_URL = import.meta.env.VITE_API_URL
+      const res = await fetch(`${BASE_URL}/extract-pdf-text`, {
+        method: 'POST',
+        body: formData
+      });
+
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Failed to extract text from PDF');
+      return data.text;
     } else if (fileType.includes('image/')) {
       return await this.extractTextFromImage(file);
     } else if (
