@@ -6,12 +6,8 @@ import { Card } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
 import { analyzePitchDeckWithGemini } from '@/lib/geminiClient';
 
-
 // File processing utilities
 class FileProcessor {
-   
-  
-
   static async extractTextFromDoc(file: File): Promise<string> {
     const mammoth = await import('mammoth');
     const arrayBuffer = await file.arrayBuffer();
@@ -544,10 +540,13 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({ apiKey }) => {
               <p className="text-sm font-medium text-muted-foreground mb-2">Cons</p>
               <ul className="space-y-1">
                 {analysis.vcAnalysis.cons.map((con, index) => (
-                  <li key={index} className="text-sm text-destructive flex items-center gap-2">
-                    <Target className="w-3 h-3" />
-                    {con}
-                  </li>
+  
+    <li key={index} className="text-sm text-destructive flex items-center gap-2">
+      <Target className="w-3 h-3" />
+      {con}
+    </li>
+    
+  
                 ))}
               </ul>
             </div>
@@ -610,7 +609,7 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({ apiKey }) => {
             </div>
           </div>
         ))}
-        
+
         {isLoading && (
           <div className="flex gap-4">
             <div className="w-8 h-8 rounded-full bg-accent text-accent-foreground flex items-center justify-center">
@@ -624,10 +623,13 @@ export const ChatInterface: React.FC<ChatInterfaceProps> = ({ apiKey }) => {
                 <span className="text-sm text-muted-foreground ml-2">Analyzing pitch deck...</span>
               </div>
             </div>
+            
           </div>
+ 
         )}
         
         <div ref={messagesEndRef} />
+        
       </div>
 
       {/* Input Area */}

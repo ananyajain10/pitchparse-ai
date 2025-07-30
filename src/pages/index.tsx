@@ -5,7 +5,6 @@ import { FloatingElements } from '@/components/FloatingElements';
 import { Brain, Settings } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
-
 const Index = () => {
   const [apiKey, setApiKey] = useState<string>('');
   const [showSettings, setShowSettings] = useState(false);
@@ -80,6 +79,14 @@ const Index = () => {
                   {apiKey.includes('dummy') ? 'Demo Mode Active' : 'Connected'}
                 </p>
               </div>
+               <a
+  href="/perfect_pitch_guide.pdf"
+  download
+  className="mt-6 px-6 py-3 bg-blue-600 text-white font-semibold rounded hover:bg-blue-700 transition w-full sm:w-auto text-center block text-sm sm:text-base"
+>
+  Download Pitch Guide
+</a>
+
               <Button
                 onClick={clearApiKey}
                 variant="destructive"
